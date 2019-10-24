@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NYTimes</string>
+    <string name="email">Email</string>
+    <string name="hintMessage">Введите текст письма здесь…</string>
+    <string name="preview">Предпросмотр</string>
+</resources>
