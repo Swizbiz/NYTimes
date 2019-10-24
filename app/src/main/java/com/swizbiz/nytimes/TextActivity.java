@@ -1,17 +1,37 @@
 package com.swizbiz.nytimes;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class TextActivity extends AppCompatActivity {
+    private final static String MESSAGE = "message";
+
+    public static void start(Activity activity, String message) {
+        Intent intent = new Intent(activity, TextActivity.class);
+        intent.putExtra(MESSAGE, message);
+        activity.startActivity(intent);
+    }
+
+    private void composeEmail(String addresses, String subject, String text) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "No Email app found", Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +43,7 @@ public class TextActivity extends AppCompatActivity {
         if (intent != null) {
             Bundle extras = intent.getExtras();
             if (extras != null) {
-                String message = extras.getString(MainActivity.MESSAGE, "");
+                String message = extras.getString(MESSAGE, "");
                 textView.setText(message);
             }
         }
@@ -32,14 +52,7 @@ public class TextActivity extends AppCompatActivity {
         email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                emailIntent.setData(Uri.parse("mailto:"));
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, "andr.academy.msk@gmail.com");
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Test subject");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Test text in the body of letter");
-                if (emailIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(emailIntent);
-                }
+                composeEmail("andr.academy.msk@gmail.com", "Test subject text", "Test text in the body of letter");
             }
         });
     }
